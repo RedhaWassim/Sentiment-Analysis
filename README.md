@@ -24,17 +24,29 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 
 ## ideas:
 -analyse the data and do visualisation for:  
+
     -r/
+
+
     -time of comments 
+
+
     -relationship between time of tweets and the sentiment 
+
+
     -relationship between r/ and the sentiment 
 
 -make 2 DB 
+
+
     -premiere : unlabeled , use unsupervised learning to do sentiment analysis
+
+
     -deuxiemme : utiliser un LLM pour labeliser les donner , puis utiliser un supervised learning model 
 
+
 -avec assez de données , essayer de faire un fine tuning d'un petit LLM et voir le resultat 
- 
+
 
 
 ## Contact
