@@ -51,6 +51,11 @@ types-pyyaml = "^6.0.12.11"
 types-requests = "^2.31.0.2"
 
 
+
+[tool.poetry.group.datapipeline.dependencies]
+kafka-python = "^2.0.2"
+pyspark = "^3.4.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
