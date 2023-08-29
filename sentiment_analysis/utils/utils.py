@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 
 def get_from_dict_or_env(
     data: Dict[str, Any], key: str, env_key: str, default: Optional[str] = None
-) -> str:
+) -> Any:
     """Get a value from a dictionary or an environment variable."""
     if key in data and data[key]:
         return data[key]

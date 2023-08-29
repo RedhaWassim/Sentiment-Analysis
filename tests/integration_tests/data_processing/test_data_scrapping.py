@@ -1,4 +1,4 @@
-from sentiment_analysis.components.data_preparation.data_scrapping import Scrapper
+from sentiment_analysis.components.data_preparation.reddit_producer import Scrapper
 import pandas as pd
 def test_scrapper():
     scrapper=Scrapper(scrapping_theme="new",topic_number=1,comments_number=1)
