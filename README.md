@@ -26,8 +26,8 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 
 ### Redha
 
-- [ ] data processing
-- [ ] data processing
+- [ ] setting kafka
+- [ ] setting spark
 
 
 ## ideas:
