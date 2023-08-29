@@ -22,6 +22,14 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 - [ ] Add tests
 
 
+## Actual:
+
+### Redha
+
+[] setting kafka
+[] setting spark 
+
+
 ## ideas:
 -analyse the data and do visualisation for:  
 
