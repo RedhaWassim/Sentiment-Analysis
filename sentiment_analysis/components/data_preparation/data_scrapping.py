@@ -9,12 +9,8 @@ from sentiment_analysis.exception import CustomException
 from sentiment_analysis.logging_config import logging
 from sentiment_analysis.utils.utils import get_from_dict_or_env
 
-from confluent_kafka.schema_registry import SchemaRegistryClient
-from confluent_kafka.serialization import StringSerializer
-from confluent_kafka import SerializingProducer
-from confluent_kafka.schema_registry.avro import AvroSerializer
-
-from sentiment_analysis.components.data_preparation.config import my_api_keys
+import os
+from supabase import create_client, Client
 
 class Topic_producer(BaseModel):
     scrapping_theme: Literal["hot", "new", "best"]
@@ -32,12 +28,11 @@ class Topic_producer(BaseModel):
     username: Optional[str] = None
     """reddit api_keys"""
 
-    kafka_config : Optional[Dict] =None
-    """kafka_config"""
+    #supabase_url : Optional[str] = None
+    #supabase_key : Optional[str] = None
+    """database key"""
 
-
-    user_agent: Optional[str] = "USER-AGENT"
-
+    user_agent : Optional[str] = "user_agent"
     class ConfigDict:
         """pydantic forbidding extra arguments"""
 
@@ -55,48 +50,54 @@ class Topic_producer(BaseModel):
         values["username"] = get_from_dict_or_env(values, "username", "USERNAME")
 
         return values
+    
 
-    def comment_producer(
-        self, scrapper: praw.Reddit, topics: ListingGenerator
+
+
+    def _comment_producer(
+        self, scrapper: praw.Reddit, post
     ) -> Dict:
+        """
+        Args:
+
+        scrapper : the scrapper instance
+        post : the reddit submission where you want to scrappe comments         
+        
+        return:
+          list of comments
+        """
         try:
-            data = []
-            for topic in topics:
-                json = {}
-                print(topic)
-                post = scrapper.submission(topic)
+            comments_list = []
 
-                comments = post.comments
+            comments = post.comments
+            for comment in comments[1 : self.comments_number + 1]:
+                if isinstance(comment, MoreComments):
+                    pass
+                else:
+                    body = comment.body 
+                    date = comment.created_utc
+                    is_submitter = comment.is_submitter
+                    score = comment.score
+                    replies = comment.replies
+                    replies_count = len(replies)
+                    json={"body" :body,
+                          "date":date,
+                          "is_submitter":is_submitter,
+                          "score":score,
+                          "replies_count":replies_count}
+                    
+                    comments_list.append(json)
 
-                for comment in comments[1 : self.comments_number + 1]:
-                    if isinstance(comment, MoreComments):
-                        pass
-                    else:
-                        body = comment.body
-                        date = comment.created_utc
-                        is_submitter = comment.is_submitter
-                        score = comment.score
-                        replies = comment.replies
-                        replies_count = len(replies)
-
-                        json={"body" :body,
-                              "date":date,
-                              "is_submitter":is_submitter,
-                              "score":score,
-                              "replies_count":replies_count}
-
-                data.append(json)
-
-            return data
+            return comments_list
+        
         except Exception as e:
             logging.info("scrapping error")
             raise CustomException(e)
         
     
-    def on_delivery(self,err,record):
-        pass
 
-    def topic_producer(
+
+    def _topic_producer(
         self, scrapper: praw.Reddit, topics: ListingGenerator
     ) -> Dict:
         try:
@@ -115,21 +116,21 @@ class Topic_producer(BaseModel):
                 over_18=post.over_18
                 id=post_id.id
                 
-                self.producer.produce(topic="reddit_topics",
-                    key=id,
-                    value={
+
+                value={
                     "TITLE" : title,
                     "POST_DATE":date,
                     "SCORE":score,
                     "NUM_COMMENTS":num_comments,
                     "UPVOTE_RATIO":upvote_ratio,
                     "OVER_18":over_18,
-                    },
-                    on_delivery=self.on_delivery,
-                )
-
-            self.producer.flush()             
-            
+                    "COMMENTS": self._comment_producer(scrapper,post)
+                    }
+                
+                data.append(value)
+                
+            return data
+                
         except Exception as e:
             logging.info("scrapping error")
             raise CustomException(e)
@@ -144,17 +145,6 @@ class Topic_producer(BaseModel):
                 user_agent=self.user_agent,
                 username=self.username,
             )
-            api_keys=my_api_keys()
-
-            schema_registery_client = SchemaRegistryClient(api_keys.schema_registry)
-            reddit_post_value_schema=schema_registery_client.get_latest_version("reddit_topics-value")
-
-            config=api_keys.KAFKA_CONFIG | {
-                "key.serializer": StringSerializer(),
-                "value.serializer": AvroSerializer(schema_registery_client,
-                                                   reddit_post_value_schema.schema.schema_str),
-            }
-            self.producer=SerializingProducer(config)
 
             if self.scrapping_theme == "hot":
                 topics = scrapper.front.hot(limit=self.topic_number)
@@ -164,7 +154,8 @@ class Topic_producer(BaseModel):
                 topics = scrapper.front.best(limit=self.topic_number)
 
 
-            self.topic_producer(scrapper,topics)
+            return self._topic_producer(scrapper,topics)
+
         
         except Exception as e:
             logging.info("scrapping error")
@@ -173,3 +164,9 @@ class Topic_producer(BaseModel):
     def __call__(self) -> list[pd.DataFrame]:
         self.run()
  
+def main():
+    scrapper=Topic_producer(scrapping_theme="hot",topic_number=2,comments_number=4)
+    print(scrapper)
+
+if __name__=="__main__":
+    main()
