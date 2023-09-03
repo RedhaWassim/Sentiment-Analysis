@@ -26,8 +26,7 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 
 ### Redha
 
-[] setting kafka
-[] setting spark 
+[] put scrapped data in supabase
 
 
 ## ideas:
@@ -55,7 +54,17 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 
 -avec assez de données , essayer de faire un fine tuning d'un petit LLM et voir le resultat 
 
+- Database backup with AWS S3
 
+-faire une liste de users qui ont beaucoup de likes , faire une analyse sur les posts de ces users et voir  
+
+-ajouter l'attribut saison pour voir si la saison influence les emotions
+
+-potentielement enlever l'attribut "posted date" et mettre ca en 2 : 
+    -saison
+    -matin/aprem/soir/nuit 
+
+-bot dans reddit pour lancer directement l'execution avec une simple commande 
 
 ## Contact
 
