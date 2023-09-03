@@ -1,6 +1,6 @@
-import boto3 
+import boto3
 import json
-import pydantic 
+import pydantic
 from pydantic import BaseModel, model_validator
 from sentiment_analysis.utils.utils import get_from_dict_or_env
 from bson import json_util
@@ -27,8 +27,8 @@ class KinesisFireHose(BaseModel):
     class ConfigDict:
         """pydantic forbidding extra arguments"""
 
-        extra = "allow"
-    
+        extra = "forbid"
+
     @model_validator(mode="before")
     @classmethod
     def validate_environment(cls, values: Dict) -> Dict:
@@ -89,7 +89,4 @@ class KinesisFireHose(BaseModel):
         )
 
         response_aws=json.dumps(response,indent=3)
-        return response        
-
-
-
+        return response
