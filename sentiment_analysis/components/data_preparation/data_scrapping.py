@@ -3,16 +3,16 @@ import pandas as pd
 import praw
 from praw.models import MoreComments
 from praw.models.listing.generator import ListingGenerator
-from pydantic import BaseModel, model_validator
+from pydantic import model_validator
 
 from sentiment_analysis.exception import CustomException
 from sentiment_analysis.logging_config import logging
 from sentiment_analysis.utils.utils import get_from_dict_or_env
-
+from sentiment_analysis.components.data_preparation.kinesis_firehose import KinesisFireHose
 import os
 from supabase import create_client, Client
 
-class Topic_producer(BaseModel):
+class Topic_producer(KinesisFireHose):
     scrapping_theme: Literal["hot", "new", "best"]
     """theme to be retreived"""
     topic_number: int
@@ -33,6 +33,9 @@ class Topic_producer(BaseModel):
     """database key"""
 
     user_agent : Optional[str] = "user_agent"
+
+    scrapper: Optional[Any] = None
+
     class ConfigDict:
         """pydantic forbidding extra arguments"""
 
@@ -40,7 +43,7 @@ class Topic_producer(BaseModel):
 
     @model_validator(mode="before")
     @classmethod
-    def validate_environment(cls, values: Dict) -> Dict:
+    def validate_environment_scrapper(cls, values: Dict) -> Dict:
         """Validate that api key exists in environment."""
         values["client_id"] = get_from_dict_or_env(values, "client_id", "CLIENT_ID")
         values["client_secret"] = get_from_dict_or_env(
@@ -48,6 +51,15 @@ class Topic_producer(BaseModel):
         )
         values["password"] = get_from_dict_or_env(values, "password", "PASSWORD")
         values["username"] = get_from_dict_or_env(values, "username", "USERNAME")
+
+        scrapper = praw.Reddit(client_id=values["client_id"],
+                client_secret=values["client_secret"],
+                password=values["password"],
+                user_agent=cls.model_fields['user_agent'].default,
+                username=values["username"],
+            )
+        
+        values["scrapper"] = scrapper
 
         return values
     
@@ -104,7 +116,6 @@ class Topic_producer(BaseModel):
             data = []
             for topic in topics:
                 json = {}
-                print(topic)
                 post = scrapper.submission(topic)
 
                 post_id=post.id
@@ -126,7 +137,9 @@ class Topic_producer(BaseModel):
                     "OVER_18":over_18,
                     "COMMENTS": self._comment_producer(scrapper,post)
                     }
-                
+                self.post(value)                
+                print(topic,"posted successfully")
+
                 data.append(value)
                 
             return data
@@ -138,23 +151,17 @@ class Topic_producer(BaseModel):
 
     def run(self):
         try:
-            scrapper = praw.Reddit(
-                client_id=self.client_id,
-                client_secret=self.client_secret,
-                password=self.password,
-                user_agent=self.user_agent,
-                username=self.username,
-            )
+
 
             if self.scrapping_theme == "hot":
-                topics = scrapper.front.hot(limit=self.topic_number)
+                topics = self.scrapper.front.hot(limit=self.topic_number)
             elif self.scrapping_theme == "new":
-                topics = scrapper.front.new(limit=self.topic_number)
+                topics = self.scrapper.front.new(limit=self.topic_number)
             else:
-                topics = scrapper.front.best(limit=self.topic_number)
+                topics = self.scrapper.front.best(limit=self.topic_number)
 
 
-            return self._topic_producer(scrapper,topics)
+            return self._topic_producer(self.scrapper,topics)
 
         
         except Exception as e:

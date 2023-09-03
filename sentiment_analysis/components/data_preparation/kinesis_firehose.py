@@ -4,7 +4,7 @@ import pydantic
 from pydantic import BaseModel, model_validator
 from sentiment_analysis.utils.utils import get_from_dict_or_env
 from bson import json_util
-from typing import Dict, Literal, Optional,Any
+from typing import Dict, Optional,Any
 
 class MetaClass:
 
@@ -29,26 +29,23 @@ class KinesisFireHose(BaseModel):
 
         extra = "allow"
     
-    
-    @model_validator(mode="before")
-    @classmethod
-    def initialize_client(cls, values: Dict) -> Dict:
-        """Initialize the client after API keys are validated."""
-        client =boto3.client('firehose', region_name='eu-north-1',
-                                        aws_access_key_id=values["access_key_id"],
-                                        aws_secret_access_key=values["secret_access_key"])
-        values["client"] = client
-        return values
-    
     @model_validator(mode="before")
     @classmethod
     def validate_environment(cls, values: Dict) -> Dict:
         """Validate that api key exists in environment."""
         values["access_key_id"] = get_from_dict_or_env(values, "access_key_id", "AWS_ACCESS_KEY_ID")
         values["secret_access_key"] = get_from_dict_or_env(values, "secret_access_key", "AWS_SECRET_ACCESS_KEY")
-        
 
+        """Initialize the client after API keys are validated."""
+
+        client =boto3.client('firehose', region_name='eu-north-1',
+                                        aws_access_key_id=values["access_key_id"],
+                                        aws_secret_access_key=values["secret_access_key"])
+        values["client"] = client
+        
         return values
+
+
     
     @property
     def describe(self):
@@ -78,7 +75,7 @@ class KinesisFireHose(BaseModel):
             json response from aws
 
         """
-
+        
         json_payload=json.dumps(payload)
         json_payload =json_payload+ "\n"
 
@@ -87,7 +84,7 @@ class KinesisFireHose(BaseModel):
 
         response=self.client.put_record(
             DeliveryStreamName=self.stream_name,
-            Record={"data":json_payload_encoded}
+            Record={"Data":json_payload_encoded}
 
         )
 
