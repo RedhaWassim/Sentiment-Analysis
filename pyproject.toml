@@ -17,6 +17,7 @@ pandas-stubs = "^2.0.3.230814"
 ipykernel = "^6.25.1"
 pyprojroot = "^0.3.0"
 fastavro = "^1.8.2"
+pymongo = "^4.5.0"
 
 
 [tool.poetry.group.test.dependencies]
@@ -57,6 +58,11 @@ types-requests = "^2.31.0.2"
 kafka-python = "^2.0.2"
 pyspark = "^3.4.1"
 confluent-kafka = "^2.2.0"
+supabase = "^1.0.4"
+
+
+[tool.poetry.group.aws.dependencies]
+boto3 = "^1.28.40"
 
 [build-system]
 requires = ["poetry-core"]
