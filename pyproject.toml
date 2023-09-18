@@ -18,6 +18,8 @@ ipykernel = "^6.25.1"
 pyprojroot = "^0.3.0"
 fastavro = "^1.8.2"
 pymongo = "^4.5.0"
+supabase = "^1.0.4"
+boto3-stubs = "^1.28.49"
 
 
 [tool.poetry.group.test.dependencies]
@@ -64,6 +66,11 @@ supabase = "^1.0.4"
 [tool.poetry.group.aws.dependencies]
 boto3 = "^1.28.40"
 
+[tool.ruff]
+line-length = 95
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
