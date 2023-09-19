@@ -94,8 +94,8 @@ class DataIngestion(BaseModel):
         client = self.supabase_client
         response = client.table(self.table_name).select("*").execute()  # type: ignore
         df = pd.DataFrame(response.data)
-        train, test = self._split_data(df)
-        return train, test
+        train_data, test_data = self._split_data(df)
+        return train_data, test_data
 
     def _read_from_csv(self):
         """
@@ -106,8 +106,8 @@ class DataIngestion(BaseModel):
         """
         logging.info("read data from csv")
         df = pd.read_csv(self.data_path)
-        train, test = self._split_data(df)
-        return train, test
+        train_data, test_data = self._split_data(df)
+        return train_data, test_data
 
     def _split_data(self, dataframe: pd.DataFrame) -> tuple:
         """
@@ -118,17 +118,21 @@ class DataIngestion(BaseModel):
         """
         logging.info("split data into train and test")
 
-        train, test = train_test_split(dataframe, test_size=0.2, random_state=42)
+        train_data, test_data = train_test_split(
+            dataframe, test_size=0.2, random_state=42
+        )
 
         if self.save_csv:
             os.makedirs(
                 os.path.dirname(self.DataIngestionConfig.raw_data_path), exist_ok=True
             )
 
-            train.to_csv(self.DataIngestionConfig.train_data_path, index=False)
-            test.to_csv(self.DataIngestionConfig.test_data_path, index=False)
+            train_data.to_csv(self.DataIngestionConfig.train_data_path, index=False)
+            test_data.to_csv(self.DataIngestionConfig.test_data_path, index=False)
 
-        return train, test
+        logging.info("data ingestion completed")
+
+        return train_data, test_data
 
     def run_ingestion(self) -> tuple:
         """
@@ -137,10 +141,10 @@ class DataIngestion(BaseModel):
         try:
             logging.info("running ingestion")
             if self.ingestion_type == "csv":
-                train, test = self._read_from_csv()
+                train_data, test_data = self._read_from_csv()
             else:
-                train, test = self._read_from_db()
+                train_data, test_data = self._read_from_db()
 
-            return train, test
+            return train_data, test_data
         except Exception as e:
             raise CustomException(e)
