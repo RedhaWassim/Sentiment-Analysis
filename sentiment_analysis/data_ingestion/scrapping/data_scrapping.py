@@ -6,7 +6,7 @@ from praw.models import MoreComments
 from praw.models.listing.generator import ListingGenerator
 from pydantic import model_validator
 
-from sentiment_analysis.data_processing.processing.kinesis_firehose.kinesis_firehose import (
+from sentiment_analysis.data_ingestion.processing.kinesis_firehose.kinesis_firehose import (
     KinesisFireHose,
 )
 from sentiment_analysis.exception import CustomException
