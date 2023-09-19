@@ -12,21 +12,25 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 
 ## Todo
 
+### Data pipeline
 - [x] ~~configure~~
 - [x] ~~data collection~~
-- [ ] data processing
-- [ ] data storage
-- [ ] models
+- [x] ~~data processing~~
+- [x] ~~data storage~~
+
+### ML pipeline
+- [ ] data ingestion
+- [ ] data transformation 
+- [ ] model training  , evaluation , tuning
 - [ ] Deploy
 - [ ] Monitoring
-- [ ] Add tests
+
+### Testing 
+- [ ] add unit tests
+- [ ] add integration tests
 
 
 ## Actual:
-
-### Redha
-
-[] put scrapped data in supabase
 
 
 ## ideas:
