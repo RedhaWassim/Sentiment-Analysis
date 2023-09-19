@@ -3,12 +3,12 @@ import os
 import boto3
 from supabase import create_client
 
-from sentiment_analysis.data_ingestion.utils.data_processing import (
+from sentiment_analysis.data_pipeline.utils.data_processing import (
     insert_comments,
     insert_posts,
     processing,
 )
-from sentiment_analysis.data_ingestion.utils.json_parser import recursively_parse_json
+from sentiment_analysis.data_pipeline.utils.json_parser import recursively_parse_json
 
 
 def lambda_handler(event, context):
