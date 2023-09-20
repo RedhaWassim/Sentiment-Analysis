@@ -13,9 +13,9 @@ from sentiment_analysis.machine_learning.components.transformers import (
     BoolValueTransformer,
     CharacterCounter,
     ColumnDropperTransformer,
-    TextMissingValueTransformer,
     LowerCaseTransformer,
-    TokenizerTransformer
+    TextMissingValueTransformer,
+    TokenizerTransformer,
 )
 from sentiment_analysis.machine_learning.utils.saver import save_object
 
@@ -62,21 +62,10 @@ class DataTransformation(BaseModel):
             ]
         )
 
-        NLP_processing_pipeline=Pipeline(
+        NLP_processing_pipeline = Pipeline(
             steps=[
-                ("lower_case",LowerCaseTransformer(textual_columns)),
-                ("tokenizer",TokenizerTransformer(textual_columns)),
-                #remove special char
-                #remove tags
-                #removestopwords 
-            ]
-        )
-
-        embedding_pipeline =Pipeline(
-            steps=[
-                #tokenization
-                #normalization
-                #embedding
+                ("lower_case", LowerCaseTransformer(textual_columns)),
+                ("tokenizer", TokenizerTransformer(textual_columns)),
             ]
         )
 
@@ -122,7 +111,12 @@ class DataTransformation(BaseModel):
             categorical_columns = ["OVER_18"]
             date_columns = ["YEAR", "MONTH", "DAY", "HOUR"]
             all_columns = (
-                 textual_columns+["n_char","tokenz"] +numerical_columns + categorical_columns +["UPVOTE_RATIO"]+ date_columns
+                textual_columns
+                + ["n_char", "tokenz"]
+                + numerical_columns
+                + categorical_columns
+                + ["UPVOTE_RATIO"]
+                + date_columns
             )
             train_transformed_data = preprocessor.fit_transform(data_train)
             test_transformed_data = preprocessor.transform(data_test)
@@ -133,8 +127,8 @@ class DataTransformation(BaseModel):
             test_transformed_data = pd.DataFrame(
                 test_transformed_data, columns=all_columns
             )
-            train_transformed_data.drop("TITLE",axis=1,inplace=True)
-            test_transformed_data.drop("TITLE",axis=1,inplace=True)
+            train_transformed_data.drop("TITLE", axis=1, inplace=True)
+            test_transformed_data.drop("TITLE", axis=1, inplace=True)
             logging.info("preprocessing completed")
 
             save_object(
@@ -166,8 +160,40 @@ class DataTransformation(BaseModel):
         """
         try:
             logging.info("Reading train data")
+
             data_train = pd.read_csv(train_path)
             data_test = pd.read_csv(test_path)
+
+            logging.info("getting transformer object")
+
+            preprocessor = self.init_transformer(data_train)
+
+            textual_columns = ["TITLE"]
+            numerical_columns = ["SCORE", "NUM_COMMENTS"]
+            categorical_columns = ["OVER_18"]
+            date_columns = ["YEAR", "MONTH", "DAY", "HOUR"]
+
+            all_columns = (
+                textual_columns
+                + ["n_char", "tokenz"]
+                + numerical_columns
+                + categorical_columns
+                + ["UPVOTE_RATIO"]
+                + date_columns
+            )
+
+            train_transformed_data = preprocessor.fit_transform(data_train)
+            test_transformed_data = preprocessor.transform(data_test)
+
+            train_transformed_data = pd.DataFrame(
+                train_transformed_data, columns=all_columns
+            )
+            test_transformed_data = pd.DataFrame(
+                test_transformed_data, columns=all_columns
+            )
+
+            train_transformed_data.drop("TITLE", axis=1, inplace=True)
+            test_transformed_data.drop("TITLE", axis=1, inplace=True)
 
             preprocessor = self.init_transformer(data_train)
 

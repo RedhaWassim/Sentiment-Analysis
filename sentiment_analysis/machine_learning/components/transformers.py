@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import spacy
+from langchain.embeddings import EdenAiEmbeddings
 from nltk.tokenize import RegexpTokenizer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
@@ -7,8 +9,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.preprocessing import MinMaxScaler
-import spacy
+
 nlp = spacy.load("en_core_web_sm")
+
+stop_words = spacy.lang.en.stop_words.STOP_WORDS #ignore
 
 
 class ColumnDropperTransformer(BaseEstimator, TransformerMixin):
@@ -21,7 +25,7 @@ class ColumnDropperTransformer(BaseEstimator, TransformerMixin):
     def transform(self, X, y=None):
         for column in self.feature_name:
             if column in X.columns:
-                X = X.drop(columns=column,axis=1)
+                X = X.drop(columns=column, axis=1)
         return X
 
 
@@ -78,17 +82,18 @@ class CharacterCounter(BaseEstimator, TransformerMixin):
         return X
 
 
-
-class LowerCaseTransformer(BaseEstimator,TransformerMixin):
+class LowerCaseTransformer(BaseEstimator, TransformerMixin):
     """Count the number of characters in a document."""
 
-    def __init__(self,columns):
-        self.columns=columns
+    def __init__(self, columns):
+        self.columns = columns
 
     def fit(self, X, y=None):
         return self
-    def to_low(self,text):
+
+    def to_low(self, text):
         return text.lower()
+
     def transform(self, X, y=None):
         for col in self.columns:
             X[col] = X[col].apply(self.to_low)
@@ -97,19 +102,22 @@ class LowerCaseTransformer(BaseEstimator,TransformerMixin):
 
 
 class TokenizerTransformer(TransformerMixin):
-    def __init__(self,columns):
-        self.columns=columns
+    def __init__(self, columns):
+        self.columns = columns
+        self.vectorizer = TfidfVectorizer()
+
     def tokenize_text(self, text):
         doc = nlp(text)
-        return [token.text for token in doc]
-    
+        tokens = [token.text for token in doc]
+        tokens_removed_sw = [token for token in tokens if token not in stop_words]
+        lemmatized_tokens = [token.lemma_ for token in nlp(" ".join(tokens_removed_sw))]
+
+        return lemmatized_tokens
+
     def fit(self, X, y=None, **fit_params):
         return self
 
     def transform(self, X, y=None):
-        # Tokenize the specified column in the DataFrame
-        for col in self.columns :
+        for col in self.columns:
             X[col] = X[col].apply(self.tokenize_text)
         return X
-    
-
