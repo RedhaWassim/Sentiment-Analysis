@@ -12,6 +12,9 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 
 ![project_workflow](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/b77a6769-b6a7-4169-a893-88f643b01b8c)
 
+# DATA ENGINEERING WORKFLOW
+![3](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/365e547c-f353-4230-8857-d6c5d299ca47)
+
 
 ## Todo
 
