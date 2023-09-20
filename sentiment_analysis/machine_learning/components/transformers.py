@@ -101,7 +101,7 @@ class LowerCaseTransformer(BaseEstimator, TransformerMixin):
         return X
 
 
-class TokenizerTransformer(TransformerMixin):
+class TokenizerTransformer(BaseEstimator,TransformerMixin):
     def __init__(self, columns):
         self.columns = columns
         self.vectorizer = TfidfVectorizer()
