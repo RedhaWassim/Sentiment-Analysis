@@ -10,6 +10,9 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 - Interactive dashboard: Visualizes sentiment trends over time for different topics.
 - User-friendly interface: Provides an easy-to-use interface for users to interact with the tool.
 
+![project_workflow](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/b77a6769-b6a7-4169-a893-88f643b01b8c)
+
+
 ## Todo
 
 ### Data pipeline
