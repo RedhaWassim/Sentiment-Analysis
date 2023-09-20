@@ -19,8 +19,8 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 - [x] ~~data storage~~
 
 ### ML pipeline
-- [ ] data ingestion
-- [ ] data transformation 
+- [x] ~~data ingestion~~
+- [x] ~~data transformation~~
 - [ ] model training  , evaluation , tuning
 - [ ] Deploy
 - [ ] Monitoring
