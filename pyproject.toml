@@ -16,6 +16,10 @@ tweety = "^0.1.6"
 pandas-stubs = "^2.0.3.230814"
 ipykernel = "^6.25.1"
 pyprojroot = "^0.3.0"
+fastavro = "^1.8.2"
+pymongo = "^4.5.0"
+supabase = "^1.0.4"
+boto3-stubs = "^1.28.49"
 
 
 [tool.poetry.group.test.dependencies]
@@ -51,6 +55,29 @@ types-pyyaml = "^6.0.12.11"
 types-requests = "^2.31.0.2"
 
 
+
+[tool.poetry.group.datapipeline.dependencies]
+kafka-python = "^2.0.2"
+pyspark = "^3.4.1"
+confluent-kafka = "^2.2.0"
+supabase = "^1.0.4"
+sqlalchemy = "^2.0.21"
+
+
+[tool.poetry.group.aws.dependencies]
+boto3 = "^1.28.40"
+
+
+[tool.poetry.group.model.dependencies]
+scikit-learn = "^1.3.0"
+spacy = "^3.6.1"
+langchain = "^0.0.295"
+
+[tool.ruff]
+line-length = 95
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
