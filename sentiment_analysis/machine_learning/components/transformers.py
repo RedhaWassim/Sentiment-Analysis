@@ -7,6 +7,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.preprocessing import MinMaxScaler
+import spacy
+nlp = spacy.load("en_core_web_sm")
 
 
 class ColumnDropperTransformer(BaseEstimator, TransformerMixin):
@@ -19,7 +21,7 @@ class ColumnDropperTransformer(BaseEstimator, TransformerMixin):
     def transform(self, X, y=None):
         for column in self.feature_name:
             if column in X.columns:
-                X = X.drop(columns=column)
+                X = X.drop(columns=column,axis=1)
         return X
 
 
@@ -76,15 +78,38 @@ class CharacterCounter(BaseEstimator, TransformerMixin):
         return X
 
 
-class TokenizerTransformer(TransformerMixin):
+
+class LowerCaseTransformer(BaseEstimator,TransformerMixin):
     """Count the number of characters in a document."""
 
-    def __init__(self):
-        pass
+    def __init__(self,columns):
+        self.columns=columns
 
     def fit(self, X, y=None):
         return self
+    def to_low(self,text):
+        return text.lower()
+    def transform(self, X, y=None):
+        for col in self.columns:
+            X[col] = X[col].apply(self.to_low)
+
+        return X
+
+
+class TokenizerTransformer(TransformerMixin):
+    def __init__(self,columns):
+        self.columns=columns
+    def tokenize_text(self, text):
+        doc = nlp(text)
+        return [token.text for token in doc]
+    
+    def fit(self, X, y=None, **fit_params):
+        return self
 
     def transform(self, X, y=None):
-        return [token.text for doc in nlp.pipe(X)]
+        # Tokenize the specified column in the DataFrame
+        for col in self.columns :
+            X[col] = X[col].apply(self.tokenize_text)
+        return X
     
+

@@ -14,7 +14,8 @@ from sentiment_analysis.machine_learning.components.transformers import (
     CharacterCounter,
     ColumnDropperTransformer,
     TextMissingValueTransformer,
-    TokenCounter,
+    LowerCaseTransformer,
+    TokenizerTransformer
 )
 from sentiment_analysis.machine_learning.utils.saver import save_object
 
@@ -63,7 +64,8 @@ class DataTransformation(BaseModel):
 
         NLP_processing_pipeline=Pipeline(
             steps=[
-                #lower
+                ("lower_case",LowerCaseTransformer(textual_columns)),
+                ("tokenizer",TokenizerTransformer(textual_columns)),
                 #remove special char
                 #remove tags
                 #removestopwords 
@@ -83,6 +85,7 @@ class DataTransformation(BaseModel):
         preprocessor = ColumnTransformer(
             transformers=[
                 ("textual", text_pipeline, textual_columns),
+                ("nlp_processing", NLP_processing_pipeline, textual_columns),
                 ("drop_transformer", drop_transformer, drop_columns),
                 ("numerical", num_pipeline, numerical_columns),
                 ("categorical", cat_pipeline, categorical_columns),
@@ -119,7 +122,7 @@ class DataTransformation(BaseModel):
             categorical_columns = ["OVER_18"]
             date_columns = ["YEAR", "MONTH", "DAY", "HOUR"]
             all_columns = (
-                textual_columns+["n_char"] + numerical_columns + categorical_columns +["UPVOTE_RATIO"]+ date_columns
+                 textual_columns+["n_char","tokenz"] +numerical_columns + categorical_columns +["UPVOTE_RATIO"]+ date_columns
             )
             train_transformed_data = preprocessor.fit_transform(data_train)
             test_transformed_data = preprocessor.transform(data_test)
@@ -130,7 +133,8 @@ class DataTransformation(BaseModel):
             test_transformed_data = pd.DataFrame(
                 test_transformed_data, columns=all_columns
             )
-
+            train_transformed_data.drop("TITLE",axis=1,inplace=True)
+            test_transformed_data.drop("TITLE",axis=1,inplace=True)
             logging.info("preprocessing completed")
 
             save_object(
