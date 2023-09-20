@@ -12,16 +12,6 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 
 ## Todo
 
-<<<<<<< HEAD
-- [x] ~~configure~~
-- [x] ~~data collection~~
-- [ ] data processing
-- [ ] data storage
-- [ ] models
-- [ ] Deploy
-- [ ] Monitoring
-- [ ] Add tests
-=======
 ### Data pipeline
 - [x] ~~configure~~
 - [x] ~~data collection~~
@@ -38,19 +28,10 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 ### Testing 
 - [ ] add unit tests
 - [ ] add integration tests
->>>>>>> EDA
 
 
 ## Actual:
 
-<<<<<<< HEAD
-### Redha
-
-- [ ] setting kafka
-- [ ] setting spark
-
-=======
->>>>>>> EDA
 
 ## ideas:
 -analyse the data and do visualisation for:  
@@ -77,9 +58,6 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
 
 -avec assez de données , essayer de faire un fine tuning d'un petit LLM et voir le resultat 
 
-<<<<<<< HEAD
-
-=======
 - Database backup with AWS S3
 
 -faire une liste de users qui ont beaucoup de likes , faire une analyse sur les posts de ces users et voir  
@@ -91,14 +69,9 @@ The Real-Time Twitter Sentiment Analysis project aims to provide a tool for anal
     -matin/aprem/soir/nuit 
 
 -bot dans reddit pour lancer directement l'execution avec une simple commande 
->>>>>>> EDA
 
 ## Contact
 
 - Your Name: [bra.rwassim@gmail.com]
 - Project Link: [https://github.com/RedhaWassim/end-to-end-real-time-twitter-sentiment-analysis]
-<<<<<<< HEAD
 - LinkedIn: [https://www.linkedin.com/in/redha-wassim-brahimi-67a526224/]
-=======
-- LinkedIn: [https://www.linkedin.com/in/redha-wassim-brahimi-67a526224/]
->>>>>>> EDA
