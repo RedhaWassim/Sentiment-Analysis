@@ -11,8 +11,10 @@ from sentiment_analysis.exception import CustomException
 from sentiment_analysis.logging_config import logging
 from sentiment_analysis.machine_learning.components.transformers import (
     BoolValueTransformer,
+    CharacterCounter,
     ColumnDropperTransformer,
     TextMissingValueTransformer,
+    TokenCounter,
 )
 from sentiment_analysis.machine_learning.utils.saver import save_object
 
@@ -32,18 +34,13 @@ class DataTransformation(BaseModel):
             processor : Sklearn ColumnTransformer
 
         """
-        numerical_columns = ["SCORE", "NUM_COMMENTS", "UPVOTE_RATIO"]
-        categorical_columns = ["OVER_18"]
         textual_columns = ["TITLE"]
-        column_to_drop = ["id", "YEAR", "MONTH", "DAY", "HOUR", "POST_DATE"]
+        numerical_columns = ["SCORE", "NUM_COMMENTS"]
+        categorical_columns = ["OVER_18"]
+        drop_columns = ["POST_DATE", "id"]
 
-        general_pipeline = Pipeline(
-            steps=[
-                (
-                    "drop_columns",
-                    ColumnDropperTransformer(column_to_drop),
-                )
-            ]
+        drop_transformer = Pipeline(
+            [("column_dropper", ColumnDropperTransformer(drop_columns))]
         )
 
         num_pipeline = Pipeline(
@@ -58,28 +55,40 @@ class DataTransformation(BaseModel):
         )
 
         text_pipeline = Pipeline(
-            steps=[("missing_values", TextMissingValueTransformer(textual_columns))]
+            steps=[
+                ("missing_values", TextMissingValueTransformer(textual_columns)),
+                ("CharacterCounter", CharacterCounter()),
+            ]
+        )
+
+        NLP_processing_pipeline=Pipeline(
+            steps=[
+                #lower
+                #remove special char
+                #remove tags
+                #removestopwords 
+            ]
+        )
+
+        embedding_pipeline =Pipeline(
+            steps=[
+                #tokenization
+                #normalization
+                #embedding
+            ]
         )
 
         logging.info("Creating preprocessor object")
 
-        numerical_pipeline = ColumnTransformer(
-            [("numerical", num_pipeline, numerical_columns)]
-        )
-
-        preprocessor = Pipeline(
-            steps=[
-                ("general", general_pipeline),
-                ("categorical", cat_pipeline),
-                ("textual", text_pipeline),
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ("textual", text_pipeline, textual_columns),
+                ("drop_transformer", drop_transformer, drop_columns),
+                ("numerical", num_pipeline, numerical_columns),
+                ("categorical", cat_pipeline, categorical_columns),
             ],
+            remainder="passthrough",
         )
-
-
-
-        
-
-
 
         logging.info("processor object created")
 
@@ -105,9 +114,22 @@ class DataTransformation(BaseModel):
             preprocessor = self.init_transformer(data_train)
 
             logging.info("preprocessing the data")
-
+            textual_columns = ["TITLE"]
+            numerical_columns = ["SCORE", "NUM_COMMENTS"]
+            categorical_columns = ["OVER_18"]
+            date_columns = ["YEAR", "MONTH", "DAY", "HOUR"]
+            all_columns = (
+                textual_columns+["n_char"] + numerical_columns + categorical_columns +["UPVOTE_RATIO"]+ date_columns
+            )
             train_transformed_data = preprocessor.fit_transform(data_train)
             test_transformed_data = preprocessor.transform(data_test)
+
+            train_transformed_data = pd.DataFrame(
+                train_transformed_data, columns=all_columns
+            )
+            test_transformed_data = pd.DataFrame(
+                test_transformed_data, columns=all_columns
+            )
 
             logging.info("preprocessing completed")
 

@@ -1,4 +1,12 @@
+import numpy as np
+import pandas as pd
+from nltk.tokenize import RegexpTokenizer
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.compose import ColumnTransformer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import FeatureUnion, Pipeline
+from sklearn.preprocessing import MinMaxScaler
 
 
 class ColumnDropperTransformer(BaseEstimator, TransformerMixin):
@@ -15,7 +23,6 @@ class ColumnDropperTransformer(BaseEstimator, TransformerMixin):
         return X
 
 
-
 class TextMissingValueTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, column_to_process):
         self.column_to_process = column_to_process
@@ -30,10 +37,8 @@ class TextMissingValueTransformer(BaseEstimator, TransformerMixin):
 
     def transform(self, X, y=None):
         # Apply missing value handling to the specified column
-        for column in self.column_to_process :
-            X[column] = X[column].apply(
-                self._format_deleted
-            )
+        for column in self.column_to_process:
+            X[column] = X[column].apply(self._format_deleted)
         X = X.dropna(subset=self.column_to_process)
         return X
 
@@ -45,7 +50,7 @@ class BoolValueTransformer(BaseEstimator, TransformerMixin):
     def _bool_to_int(self, text):
         try:
             return int(text)
-        except :
+        except:
             return text
 
     def fit(self, X, y=None):
@@ -55,3 +60,31 @@ class BoolValueTransformer(BaseEstimator, TransformerMixin):
         # Apply the _bool_to_int function to the specified column
         X[self.column_to_process] = X[self.column_to_process].astype(int)
         return X
+
+
+class CharacterCounter(BaseEstimator, TransformerMixin):
+    """Count the number of characters in a document."""
+
+    def __init__(self):
+        pass
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X):
+        X["n_characters"] = X.iloc[:, 0].str.len()
+        return X
+
+
+class TokenizerTransformer(TransformerMixin):
+    """Count the number of characters in a document."""
+
+    def __init__(self):
+        pass
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        return [token.text for doc in nlp.pipe(X)]
+    
