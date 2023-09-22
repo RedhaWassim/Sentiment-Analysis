@@ -16,6 +16,7 @@ from sentiment_analysis.machine_learning.components.transformers import (
     LowerCaseTransformer,
     TextMissingValueTransformer,
     TokenizerTransformer,
+    EmbedTransformer,
 )
 from sentiment_analysis.machine_learning.utils.saver import save_object
 
@@ -66,6 +67,7 @@ class DataTransformation(BaseModel):
             steps=[
                 ("lower_case", LowerCaseTransformer(textual_columns)),
                 ("tokenizer", TokenizerTransformer(textual_columns)),
+                ("embed",EmbedTransformer())
             ]
         )
 
@@ -112,7 +114,7 @@ class DataTransformation(BaseModel):
             date_columns = ["YEAR", "MONTH", "DAY", "HOUR"]
             all_columns = (
                 textual_columns
-                + ["n_char", "tokenz"]
+                + ["n_char", "tokenz","embeddings"]
                 + numerical_columns
                 + categorical_columns
                 + ["UPVOTE_RATIO"]
@@ -128,7 +130,11 @@ class DataTransformation(BaseModel):
                 test_transformed_data, columns=all_columns
             )
             train_transformed_data.drop("TITLE", axis=1, inplace=True)
+            train_transformed_data=train_transformed_data[['tokenz',"embeddings",'n_char','SCORE','NUM_COMMENTS','UPVOTE_RATIO','OVER_18','YEAR','MONTH','DAY','HOUR']]
+            
             test_transformed_data.drop("TITLE", axis=1, inplace=True)
+            test_transformed_data=test_transformed_data[['tokenz',"embeddings",'n_char','SCORE','NUM_COMMENTS','UPVOTE_RATIO','OVER_18','YEAR','MONTH','DAY','HOUR']]
+
             logging.info("preprocessing completed")
 
             save_object(
@@ -175,7 +181,7 @@ class DataTransformation(BaseModel):
 
             all_columns = (
                 textual_columns
-                + ["n_char", "tokenz"]
+                + ["n_char", "tokenz","embeddings"]
                 + numerical_columns
                 + categorical_columns
                 + ["UPVOTE_RATIO"]
@@ -193,7 +199,10 @@ class DataTransformation(BaseModel):
             )
 
             train_transformed_data.drop("TITLE", axis=1, inplace=True)
+            train_transformed_data=train_transformed_data[['tokenz',"embeddings",'n_char','SCORE','NUM_COMMENTS','UPVOTE_RATIO','OVER_18','YEAR','MONTH','DAY','HOUR']]
+
             test_transformed_data.drop("TITLE", axis=1, inplace=True)
+            test_transformed_data=test_transformed_data[['tokenz',"embeddings",'n_char','SCORE','NUM_COMMENTS','UPVOTE_RATIO','OVER_18','YEAR','MONTH','DAY','HOUR']]
 
             preprocessor = self.init_transformer(data_train)
 

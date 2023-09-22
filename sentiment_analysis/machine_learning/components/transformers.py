@@ -9,6 +9,8 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.preprocessing import MinMaxScaler
+from langchain.embeddings import EdenAiEmbeddings
+
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -114,10 +116,26 @@ class TokenizerTransformer(BaseEstimator,TransformerMixin):
 
         return lemmatized_tokens
 
-    def fit(self, X, y=None, **fit_params):
+    def fit(self, X, y=None):
         return self
 
     def transform(self, X, y=None):
         for col in self.columns:
             X[col] = X[col].apply(self.tokenize_text)
         return X
+
+class EmbedTransformer(BaseEstimator,TransformerMixin):
+    def __init__(self):
+        self.embeddings=EdenAiEmbeddings(provider="openai")
+
+    def to_embddings(self,tokens):
+        return self.embeddings.embed_documents(tokens)
+
+    def fit(self, X, y=None):
+        return self
+
+    def transform(self, X, y=None):
+        X["embeddings"] = X["TITLE"].apply(self.to_embddings)
+        return X
+
+
