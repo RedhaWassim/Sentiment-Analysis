@@ -37,8 +37,9 @@ DATA PART
 
         2. Using AWS SQS for queue system.                     
 
-        3. Using AWS LAMBDA ( python ) for data processing. 
-     - Data storage : Using SUPABASE as SQL database to store the processsed data into 2 tables : POSTS , COMMENTS . 
+        3. Using AWS LAMBDA ( python ) for data processing.
+           
+- Data storage : Using SUPABASE as SQL database to store the processsed data into 2 tables : POSTS , COMMENTS . 
 
 
 ![3](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/365e547c-f353-4230-8857-d6c5d299ca47)
@@ -49,7 +50,18 @@ MODEL PART
 
 ### plan
 model V1 : 
+![Colorful Minimalist Linear Steps Circular Diagram (2048 × 768 px) (2048 × 1080 px) (2048 × 900 px) (2048 × 850 px) (1200 × 850 px) (2500 × 850 px) (2500 × 1024 px)](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/41ffd154-fa87-42fc-849b-2469248b88c5)
 
+
+#### current plan : 
+
+- using semi-supervised method , by public reddit texts data i can train a model to predict the sentiment .
+- i will use this model to generate pseudo-labels for my data
+- I adopt a multi-input neural network architecture.
+- I begin by saving the knowledge from the pre-trained model's hidden layers and freezing them.
+- I add features and columns that are unique to my dataset by constructing a new hidden layer dedicated to process those informations.
+- To combine the insights from both text and the additional columns, I've added a special layer that effortlessly merges the knowledge from the pre-trained layers and the new columns layer.
+  
 ## Todo
 
 ### Data pipeline
@@ -62,8 +74,7 @@ model V1 :
 - [x] ~~data ingestion~~
 - [x] ~~data transformation~~
 - [ ] model training  , evaluation , tuning
-- [ ] Deploy
-- [ ] Monitoring
+- [ ] Deploy,Monitoring
 
 ### Testing 
 - [ ] add unit tests
@@ -75,5 +86,4 @@ model V1 :
 ## Contact
 
 - Your Name: [bra.rwassim@gmail.com]
-- Project Link: [https://github.com/RedhaWassim/end-to-end-real-time-twitter-sentiment-analysis]
 - LinkedIn: [https://www.linkedin.com/in/redha-wassim-brahimi-67a526224/]
