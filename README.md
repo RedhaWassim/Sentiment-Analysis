@@ -37,8 +37,9 @@ DATA PART
 
         2. Using AWS SQS for queue system.                     
 
-        3. Using AWS LAMBDA ( python ) for data processing. 
-     - Data storage : Using SUPABASE as SQL database to store the processsed data into 2 tables : POSTS , COMMENTS . 
+        3. Using AWS LAMBDA ( python ) for data processing.
+           
+- Data storage : Using SUPABASE as SQL database to store the processsed data into 2 tables : POSTS , COMMENTS . 
 
 
 ![3](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/365e547c-f353-4230-8857-d6c5d299ca47)
