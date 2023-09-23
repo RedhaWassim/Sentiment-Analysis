@@ -50,7 +50,18 @@ MODEL PART
 
 ### plan
 model V1 : 
+![image](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/9864cd1f-f75e-4de7-811f-db871d98a80f)
 
+
+#### current plan : 
+
+- using semi-supervised method , by public reddit texts data i can train a model to predict the sentiment .
+- i will use this model to generate pseudo-labels for my data
+- I adopt a multi-input neural network architecture.
+- I begin by saving the knowledge from the pre-trained model's hidden layers and freezing them.
+- I add features and columns that are unique to my dataset by constructing a new hidden layer dedicated to process those informations.
+- To combine the insights from both text and the additional columns, I've added a special layer that effortlessly merges the knowledge from the pre-trained layers and the new columns layer.
+  
 ## Todo
 
 ### Data pipeline
@@ -63,8 +74,7 @@ model V1 :
 - [x] ~~data ingestion~~
 - [x] ~~data transformation~~
 - [ ] model training  , evaluation , tuning
-- [ ] Deploy
-- [ ] Monitoring
+- [ ] Deploy,Monitoring
 
 ### Testing 
 - [ ] add unit tests
