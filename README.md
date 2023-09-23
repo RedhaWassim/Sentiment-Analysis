@@ -50,7 +50,7 @@ MODEL PART
 
 ### plan
 model V1 : 
-![image](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/9864cd1f-f75e-4de7-811f-db871d98a80f)
+![Colorful Minimalist Linear Steps Circular Diagram (2048 × 768 px) (2048 × 1080 px) (2048 × 900 px) (2048 × 850 px) (1200 × 850 px) (2500 × 850 px) (2500 × 1024 px)](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/41ffd154-fa87-42fc-849b-2469248b88c5)
 
 
 #### current plan : 
