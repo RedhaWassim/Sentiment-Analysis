@@ -1,27 +1,54 @@
-# Real-Time Twitter Sentiment Analysis
+Reddit Posts Sentiment Analysis
 ## Overview
 
-The Real-Time Twitter Sentiment Analysis project aims to provide a tool for analyzing the sentiment of tweets related to trending topics on Twitter. The project leverages natural language processing and machine learning techniques to determine whether tweets are positive, negative, or neutral in sentiment.
+The Reddit Posts Sentiment Analysis project aims to provide a tool for analyzing the sentiment of a post based on the comments . The project leverages natural language processing and machine learning techniques to determine whether the comments  are positive, negative, or neutral in sentiment and assign the sentiment to the original post .
 
 ## Features
 
-- Real-time data collection: The system collects tweets in real-time based on trending topics.
-- Sentiment analysis: Tweets are analyzed using a machine learning model to determine their sentiment.
+- Batch data collection: The system collects posts and comments in batchs based on best / new / tranding topics.
+- Sentiment analysis: posts and comments are analyzed using a machine learning model to determine their sentiment.
 - Interactive dashboard: Visualizes sentiment trends over time for different topics.
-- User-friendly interface: Provides an easy-to-use interface for users to interact with the tool.
 
 <h1 align="center">
 FULL PROJECT WORKFLOW
 </h1>
 
+this project is devided into 3 main parts: 
+
+- Data part : Responsible for scrapping , processing , storing the raw data into a database. 
+- Model part : Responsible for ingesting data from database , processing and passing data into the machine learning model to get sentiment.
+- Analyse part : Responsible for analyse results and data .  
+
 ![project_workflow](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/b77a6769-b6a7-4169-a893-88f643b01b8c)
 
 <h1 align="center">
-DATA ENGINEERING WORKFLOW
+DATA PART
 </h1>
+
+- data ingestion  : this module is reponsible for scrapping data from reddit using : PRAW library .
+- AWS Module :
+
+  
+     - Data Retreiver : Using AWS Kinesis firehose i can ingest data in batches into the S3 Bucket.
+     - Data Storage : Using the data lake S3 , i can store all the raw data.
+     - Data Processing :
+
+        1. Using AWS SNS for notifications when data is inputed into the S3 bucket.
+
+        2. Using AWS SQS for queue system.                     
+
+        3. Using AWS LAMBDA ( python ) for data processing. 
+     - Data storage : Using SUPABASE as SQL database to store the processsed data into 2 tables : POSTS , COMMENTS . 
+
 
 ![3](https://github.com/RedhaWassim/Sentiment-Analysis/assets/78182178/365e547c-f353-4230-8857-d6c5d299ca47)
 
+<h1 align="center">
+MODEL PART
+</h1>
+
+### plan
+model V1 : 
 
 ## Todo
 
@@ -42,46 +69,8 @@ DATA ENGINEERING WORKFLOW
 - [ ] add unit tests
 - [ ] add integration tests
 
-
-## Actual:
-
-
 ## ideas:
--analyse the data and do visualisation for:  
 
-    -r/
-
-
-    -time of comments 
-
-
-    -relationship between time of tweets and the sentiment 
-
-
-    -relationship between r/ and the sentiment 
-
--make 2 DB 
-
-
-    -premiere : unlabeled , use unsupervised learning to do sentiment analysis
-
-
-    -deuxiemme : utiliser un LLM pour labeliser les donner , puis utiliser un supervised learning model 
-
-
--avec assez de données , essayer de faire un fine tuning d'un petit LLM et voir le resultat 
-
-- Database backup with AWS S3
-
--faire une liste de users qui ont beaucoup de likes , faire une analyse sur les posts de ces users et voir  
-
--ajouter l'attribut saison pour voir si la saison influence les emotions
-
--potentielement enlever l'attribut "posted date" et mettre ca en 2 : 
-    -saison
-    -matin/aprem/soir/nuit 
-
--bot dans reddit pour lancer directement l'execution avec une simple commande 
 
 ## Contact
 
