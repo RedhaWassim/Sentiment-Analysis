@@ -14,7 +14,7 @@ from sentiment_analysis.logging_config import logging
 from sentiment_analysis.utils.utils import get_from_dict_or_env
 
 
-class Topic_producer(KinesisFireHose):
+class TopicProducer(KinesisFireHose):
     scrapping_theme: Literal["hot", "new", "best"]
     """theme to be retreived"""
     topic_number: int
@@ -164,11 +164,3 @@ class Topic_producer(KinesisFireHose):
     def __call__(self) -> list[pd.DataFrame]:
         return self.run()
 
-
-def main():
-    scrapper = Topic_producer(scrapping_theme="hot", topic_number=2, comments_number=4)
-    print(scrapper)
-
-
-if __name__ == "__main__":
-    main()
