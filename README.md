@@ -85,5 +85,5 @@ model V1 :
 
 ## Contact
 
-- Your Name: [bra.rwassim@gmail.com]
+- Name: BRAHIMI REDHA WASSIM
 - LinkedIn: [https://www.linkedin.com/in/redha-wassim-brahimi-67a526224/]
