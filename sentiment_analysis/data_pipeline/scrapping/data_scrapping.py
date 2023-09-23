@@ -163,4 +163,3 @@ class TopicProducer(KinesisFireHose):
 
     def __call__(self) -> list[pd.DataFrame]:
         return self.run()
-

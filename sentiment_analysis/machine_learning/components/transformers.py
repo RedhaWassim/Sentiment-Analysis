@@ -9,12 +9,10 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import FeatureUnion, Pipeline
 from sklearn.preprocessing import MinMaxScaler
-from langchain.embeddings import EdenAiEmbeddings
-
 
 nlp = spacy.load("en_core_web_sm")
 
-stop_words = spacy.lang.en.stop_words.STOP_WORDS #ignore
+stop_words = spacy.lang.en.stop_words.STOP_WORDS  # ignore
 
 
 class ColumnDropperTransformer(BaseEstimator, TransformerMixin):
@@ -103,7 +101,7 @@ class LowerCaseTransformer(BaseEstimator, TransformerMixin):
         return X
 
 
-class TokenizerTransformer(BaseEstimator,TransformerMixin):
+class TokenizerTransformer(BaseEstimator, TransformerMixin):
     def __init__(self, columns):
         self.columns = columns
         self.vectorizer = TfidfVectorizer()
@@ -124,11 +122,12 @@ class TokenizerTransformer(BaseEstimator,TransformerMixin):
             X[col] = X[col].apply(self.tokenize_text)
         return X
 
-class EmbedTransformer(BaseEstimator,TransformerMixin):
-    def __init__(self):
-        self.embeddings=EdenAiEmbeddings(provider="openai")
 
-    def to_embddings(self,tokens):
+class EmbedTransformer(BaseEstimator, TransformerMixin):
+    def __init__(self):
+        self.embeddings = EdenAiEmbeddings(provider="openai")
+
+    def to_embddings(self, tokens):
         return self.embeddings.embed_documents(tokens)
 
     def fit(self, X, y=None):
@@ -137,5 +136,3 @@ class EmbedTransformer(BaseEstimator,TransformerMixin):
     def transform(self, X, y=None):
         X["embeddings"] = X["TITLE"].apply(self.to_embddings)
         return X
-
-
