@@ -86,5 +86,4 @@ model V1 :
 ## Contact
 
 - Your Name: [bra.rwassim@gmail.com]
-- Project Link: [https://github.com/RedhaWassim/end-to-end-real-time-twitter-sentiment-analysis]
 - LinkedIn: [https://www.linkedin.com/in/redha-wassim-brahimi-67a526224/]
